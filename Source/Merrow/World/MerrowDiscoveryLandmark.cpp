@@ -27,22 +27,19 @@ AMerrowDiscoveryLandmark::AMerrowDiscoveryLandmark()
 
     if (CubeMesh.Succeeded())
     {
-        LandmarkBase->SetStaticMesh(CubeMesh.Object);
-        LandmarkMarker->SetStaticMesh(CubeMesh.Object);
+        CubeMarkerMesh = CubeMesh.Object;
     }
-
     if (SphereMesh.Succeeded())
     {
-        LandmarkMarker->SetStaticMesh(SphereMesh.Object);
+        SphereMarkerMesh = SphereMesh.Object;
     }
-
     if (ConeMesh.Succeeded())
     {
-        LandmarkMarker->SetStaticMesh(ConeMesh.Object);
+        ConeMarkerMesh = ConeMesh.Object;
     }
-
     if (CylinderMesh.Succeeded())
     {
+        CylinderMarkerMesh = CylinderMesh.Object;
         LandmarkBase->SetStaticMesh(CylinderMesh.Object);
     }
 }
@@ -58,30 +55,36 @@ void AMerrowDiscoveryLandmark::OnConstruction(const FTransform& Transform)
     switch (SiteType)
     {
         case EMerrowDiscoverySiteType::LostPageShrine:
+            LandmarkMarker->SetStaticMesh(ConeMarkerMesh);
             LandmarkMarker->SetRelativeScale3D(FVector(0.45f, 0.45f, 0.9f));
             break;
 
         case EMerrowDiscoverySiteType::LoreRelic:
+            LandmarkMarker->SetStaticMesh(SphereMarkerMesh);
             LandmarkMarker->SetRelativeScale3D(FVector(0.85f, 0.85f, 0.85f));
             break;
 
         case EMerrowDiscoverySiteType::CorruptionScar:
+            LandmarkMarker->SetStaticMesh(ConeMarkerMesh);
             LandmarkMarker->SetRelativeScale3D(FVector(0.55f, 0.55f, 1.7f));
             break;
 
         case EMerrowDiscoverySiteType::AncientGate:
+            LandmarkMarker->SetStaticMesh(CubeMarkerMesh);
             LandmarkBase->SetRelativeScale3D(FVector(3.5f, 0.8f, 0.6f));
             LandmarkMarker->SetRelativeLocation(FVector(0.0f, 0.0f, 185.0f));
             LandmarkMarker->SetRelativeScale3D(FVector(1.5f, 0.35f, 1.5f));
             break;
 
         case EMerrowDiscoverySiteType::BossArena:
+            LandmarkMarker->SetStaticMesh(CylinderMarkerMesh);
             LandmarkBase->SetRelativeScale3D(FVector(5.0f, 5.0f, 0.35f));
             LandmarkMarker->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
             LandmarkMarker->SetRelativeScale3D(FVector(1.8f, 1.8f, 0.35f));
             break;
 
         default:
+            LandmarkMarker->SetStaticMesh(CubeMarkerMesh);
             LandmarkMarker->SetRelativeScale3D(FVector(0.5f));
             break;
     }

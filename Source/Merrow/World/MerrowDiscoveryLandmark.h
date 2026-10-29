@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "MerrowDiscoveryLandmark.generated.h"
 
+class UStaticMesh;
 class UStaticMeshComponent;
 
 UENUM(BlueprintType)
@@ -48,4 +49,17 @@ public:
     /** Use -1 for landmarks that are not tied to a numbered page. */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|Discovery", meta = (ClampMin = "-1", ClampMax = "99"))
     int32 LostPageIndex = -1;
+
+protected:
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> CubeMarkerMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> SphereMarkerMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> ConeMarkerMesh;
+
+    UPROPERTY(Transient)
+    TObjectPtr<UStaticMesh> CylinderMarkerMesh;
 };
