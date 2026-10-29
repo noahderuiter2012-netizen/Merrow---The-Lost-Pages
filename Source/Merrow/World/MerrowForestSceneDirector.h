@@ -5,10 +5,11 @@
 #include "MerrowForestSceneDirector.generated.h"
 
 class UInstancedStaticMeshComponent;
+class UStaticMeshComponent;
 
 /**
  * Runtime/editor blockout generator for Merrow's first Ancient Forest test area.
- * Uses engine basic-shape meshes as replaceable placeholders, not final art assets.
+ * Uses engine primitive meshes as replaceable placeholders, not final art.
  */
 UCLASS(Blueprintable)
 class MERROW_API AMerrowForestSceneDirector : public AActor
@@ -27,6 +28,9 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Merrow|World")
+    TObjectPtr<UStaticMeshComponent> ForestGround;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Merrow|World")
     TObjectPtr<UInstancedStaticMeshComponent> TreeTrunks;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Merrow|World")
@@ -39,9 +43,12 @@ protected:
     TObjectPtr<UInstancedStaticMeshComponent> RuinBlocks;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Merrow|World")
+    TObjectPtr<UInstancedStaticMeshComponent> AncientPathStones;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Merrow|World")
     TObjectPtr<UInstancedStaticMeshComponent> CorruptionCrystals;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|World", meta = (ClampMin = "0", ClampMax = "250"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|World", meta = (ClampMin = "0", ClampMax = "100"))
     int32 TreeCount = 90;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|World", meta = (ClampMin = "0", ClampMax = "100"))
@@ -52,6 +59,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|World", meta = (ClampMin = "0", ClampMax = "30"))
     int32 CrystalCount = 9;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|World", meta = (ClampMin = "0", ClampMax = "48"))
+    int32 PathStoneCount = 28;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merrow|World", meta = (ClampMin = "1000", ClampMax = "30000"))
     float ForestRadius = 9000.0f;
