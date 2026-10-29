@@ -1,38 +1,39 @@
 # MERROW: THE LOST PAGES
 
-A dark-fantasy story game project. The long-term target is Unreal Engine 5.6; the browser version below is an independently playable prototype.
+A dark-fantasy story game. Long-term target: Unreal Engine 5.6. This repository contains both an Unreal C++ foundation and a separate browser-playable prototype.
 
-## Play the browser prototype
+## Browser prototype
 
-The playable prototype is in \`docs/index.html\`. To publish it with GitHub Pages:
+The browser prototype is in \`docs/index.html\`. To publish with GitHub Pages, open **Settings → Pages**, select **Deploy from a branch**, choose branch \`main\` and folder \`/docs\`, then save. After Pages deploys, open:
 
-1. Open repository **Settings → Pages**.
-2. Under **Build and deployment**, choose **Deploy from a branch**.
-3. Select branch \`main\` and folder \`/docs\`, then save.
-4. Wait for GitHub Pages to finish deploying, then open:
-   https://noahderuiter2012-netizen.github.io/Merrow---The-Lost-Pages/
+https://noahderuiter2012-netizen.github.io/Merrow---The-Lost-Pages/
 
-The prototype loads Three.js from a public CDN, so it requires an internet connection. Desktop controls: WASD/arrow keys, mouse to look, E to interact. Touch devices: left joystick to move, drag the right side to look, and use the on-screen interaction button.
+The browser version is a small separate prototype. It loads Three.js from a public CDN and needs an internet connection. It is not the compiled Unreal game.
 
-### Current playable slice
+## Unreal Engine source
 
-- First-person movement and camera.
-- Dark forest environment with trees, rocks, a broken stone path, ruins, crystals, and an ancient gate.
-- Shrine with a glowing missing page.
-- Quest state: find the page, then return to the gate to complete the chapter.
-- Responsive mobile touch controls and optional generated ambient drone.
+The C++ project foundation currently includes:
 
-This is a small gameplay prototype, not the full story and not the compiled Unreal game. It has not yet been tested on every device/browser.
+- \`AMerrowAtmosphereDirector\`: adjustable fog and emerald-corruption blending.
+- \`AMerrowForestSceneDirector\`: deterministic forest blockout generation using built-in placeholder meshes.
+- \`AMerrowDiscoveryLandmark\`: editor-placeable shrine, lore relic, corruption scar, ancient gate, and boss-arena markers.
+- \`AMerrowPlayerCharacter\`: first-person camera, WASD movement, mouse look, and forward interaction trace.
+- \`AMerrowLostPagePickup\`: floating page actor that can be collected with E.
+- \`AMerrowHUD\`: objective, page count, and interaction prompt.
+- \`AMerrowGameMode\`: selects the first-person pawn and HUD.
+- \`Config/DefaultInput.ini\`: keyboard and basic gamepad input mappings.
 
-## Unreal Engine project foundation
+### Setting up the first Unreal playable slice
 
-- Unreal project descriptor and C++ game/editor targets.
-- \`AMerrowAtmosphereDirector\`: adjustable fog density and colour, blending natural mist toward emerald corruption.
-- \`AMerrowForestSceneDirector\`: deterministic Ancient Forest blockout generator using Unreal's built-in primitive meshes as temporary placeholders.
-- \`AMerrowDiscoveryLandmark\`: editor-placeable markers for lost-page shrines, lore relics, corruption scars, ancient gates, and boss arenas, with editable clue text and optional page index.
+1. Use a compatible Windows development computer with Unreal Engine 5.6 and its C++ build tools installed.
+2. Generate project files/open \`Merrow.uproject\` and compile the editor target.
+3. Create and save an Unreal level, add a floor and an \`AMerrowForestSceneDirector\` actor, and configure the generator.
+4. Add an \`AMerrowLostPagePickup\` actor where the first page should be placed.
+5. Set the level's GameMode override to \`AMerrowGameMode\` (or configure it in Project Settings).
+6. Press Play. The player should spawn, move with WASD, look with the mouse, and press E while aiming at the page to collect it.
 
-The Unreal C++ source has not been compiled or tested in Unreal Editor. A compatible Unreal Engine 5.6 installation and C++ build toolchain are required to verify and package that version.
+The C++ code has **not been compiled or run in Unreal yet**. The steps above describe the intended setup, not a verified successful build. This source milestone does not yet include a finished map asset, title menu, save system, complete quest chain, enemies, or boss encounter.
 
 ## Story direction
 
-A forbidden book was scattered across Merrow when corruption arrived. Its missing pages hold clues to the Entity's weakness and a ritual that may defeat it; every required page must be recovered. The origin of the Corrupted King and its exact relationship to the Entity remain under development.
+A forbidden book was scattered across Merrow when corruption arrived. Its missing pages contain clues to the Entity's weakness and a ritual that may defeat it; every required page must be recovered. The Corrupted King is a major threat, but its exact connection to the Entity remains under development.
