@@ -1,93 +1,97 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101713">
-<title>MERROW — Ancient Forest Preview</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#101713">
+<title>MERROW — The Lost Pages</title>
 <style>
-:root{color-scheme:dark;--ink:#e8eee7;--muted:#a9b6aa;--panel:rgba(11,18,15,.78);--line:rgba(205,231,207,.16)}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101713;color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
-#scene{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
-.overlay{position:fixed;z-index:2;pointer-events:none;inset:0;padding:clamp(16px,3vw,32px);display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,rgba(3,8,6,.62),transparent 32%,transparent 62%,rgba(3,8,6,.58))}
-header{max-width:620px} .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:10px;color:#a9d6ae;font-weight:700}h1{font-size:clamp(25px,5vw,48px);line-height:1.02;letter-spacing:.08em;margin:8px 0 10px;font-weight:650}p{margin:0;color:#c5d0c5;max-width:460px;font-size:13px}
-.bottom{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap}.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--panel);color:#d9e5da;font-size:11px;backdrop-filter:blur(12px)}.dot{width:7px;height:7px;border-radius:50%;background:#8ddf9c;box-shadow:0 0 12px #5bb96b}
-.controls{pointer-events:auto;display:flex;gap:8px;flex-wrap:wrap}.controls button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 13px;backdrop-filter:blur(12px);cursor:pointer}.controls button:active{transform:translateY(1px)}.hint{font-size:11px;color:#c2cec3;text-align:right;max-width:250px}
-#fallback{position:fixed;inset:0;display:none;place-items:center;padding:24px;text-align:center;color:var(--muted)}
-@media(max-width:560px){.overlay{padding:17px}.bottom{align-items:start;flex-direction:column}.hint{text-align:left}.controls button{padding:9px 11px}}
+:root{color-scheme:dark;--panel:rgba(8,15,12,.82);--line:rgba(190,225,195,.22);--ink:#eaf1e9;--muted:#b0c0b2;--green:#9cf2aa}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b120e;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
+#hud{position:fixed;inset:0;pointer-events:none;padding:clamp(12px,2.6vw,26px);display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,rgba(0,0,0,.46),transparent 25%,transparent 68%,rgba(0,0,0,.35))}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.brand{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#b0ddb6;font-weight:800}.quest{margin-top:8px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;max-width:min(340px,78vw);backdrop-filter:blur(10px)}.quest strong{display:block;font-size:12px;letter-spacing:.06em}.quest span{display:block;color:var(--muted);font-size:11px;margin-top:4px}.count{font-size:11px;color:var(--green);white-space:nowrap;border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:999px}
+.bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.hint{font-size:11px;color:#d0dbd0;text-shadow:0 1px 4px #000;max-width:220px}.actions{pointer-events:auto;display:flex;gap:8px;align-items:end}button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 15px;backdrop-filter:blur(10px);cursor:pointer}button:active{transform:scale(.97)}#interact{display:none;background:#234d30;border-color:#78c88b;font-weight:750;min-width:110px}#toast{position:fixed;left:50%;top:24%;transform:translate(-50%,-8px);opacity:0;transition:.25s;background:rgba(8,18,12,.92);border:1px solid rgba(150,230,164,.5);padding:12px 17px;border-radius:12px;max-width:85vw;text-align:center;font-size:13px;pointer-events:none}#toast.show{opacity:1;transform:translate(-50%,0)}#crosshair{position:fixed;left:50%;top:50%;width:5px;height:5px;border:1px solid rgba(235,255,238,.8);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+#start{position:fixed;inset:0;z-index:5;display:grid;place-items:center;padding:20px;background:linear-gradient(0deg,rgba(3,8,5,.92),rgba(3,8,5,.46)),radial-gradient(ellipse at 50% 40%,rgba(39,98,54,.24),transparent 65%)}.card{width:min(470px,100%);padding:clamp(22px,5vw,38px);border:1px solid var(--line);border-radius:22px;background:rgba(7,14,10,.78);backdrop-filter:blur(16px);box-shadow:0 20px 90px #0008}.eyebrow{font-size:10px;letter-spacing:.25em;color:#9bdba5;font-weight:800}h1{font-size:clamp(34px,8vw,56px);letter-spacing:.07em;line-height:.98;margin:12px 0} .sub{color:#c2d0c3;font-size:13px;line-height:1.65}.story{margin:18px 0;padding-left:13px;border-left:2px solid #589b65;color:#dce6dc;font-size:13px}.primary{background:#285a35;border-color:#80cb8e;width:100%;font-weight:750;margin-top:12px;padding:14px}.small{font-size:10px;color:#aebcaf;margin-top:12px;line-height:1.5}
+#mobile{display:none;position:fixed;inset:0;pointer-events:none}.stick{position:absolute;bottom:24px;left:22px;width:118px;height:118px;border-radius:50%;border:1px solid #ffffff38;background:#0b130b77;pointer-events:auto;touch-action:none}.nub{position:absolute;left:36px;top:36px;width:44px;height:44px;border-radius:50%;background:#b6dfbd35;border:1px solid #d8f6dc88}.looklabel{position:absolute;right:20px;bottom:28px;font-size:10px;color:#ffffff8a;text-shadow:0 1px 4px #000}.mobilebutton{position:absolute;right:18px;bottom:78px;pointer-events:auto;display:none}
+@media(pointer:coarse){#mobile{display:block}#interact{min-width:94px;padding:13px 12px}.hint{max-width:150px}}@media(max-width:420px){.brand{font-size:9px}.quest{padding:9px 11px}.quest strong{font-size:11px}.quest span{font-size:10px}.count{font-size:10px;padding:7px 8px}.hint{font-size:10px}}
 </style>
 </head>
 <body>
-<div id="scene"></div>
-<div class="overlay">
-<header><div class="eyebrow">MERROW · THE LOST PAGES</div><h1>THE ANCIENT FOREST</h1><p>A first atmosphere and layout study: old stone, drowned ruins, and emerald corruption pressing in from the edges.</p></header>
-<div class="bottom"><div><div class="chip"><span class="dot"></span> ENVIRONMENT BLOCKOUT · PREVIEW ONLY</div><div style="height:8px"></div><div class="chip" id="mode">Corruption intensity: 65%</div></div><div><div class="controls"><button id="corrupt">Shift corruption</button><button id="reset">Reset view</button></div><div style="height:8px"></div><div class="hint">Drag to look around · pinch or scroll to zoom</div></div></div>
+<div id="game"></div><div id="crosshair"></div>
+<div id="hud">
+ <div class="top"><div><div class="brand">MERROW · THE LOST PAGES</div><div class="quest"><strong id="objective">OBJECTIVE 01 — FIND THE SHRINE</strong><span id="description">Follow the broken stones into the clearing.</span></div></div><div class="count" id="pagecount">PAGES 0 / 7</div></div>
+ <div class="bottom"><div class="hint" id="hint">WASD to move · Mouse to look · E to interact</div><div class="actions"><button id="interact">Interact</button><button id="sound" aria-label="Toggle ambience">Sound: off</button></div></div>
 </div>
-<div id="fallback">The 3D preview needs an internet connection to load its rendering library. Check your connection and reload this page.</div>
+<div id="toast"></div>
+<div id="mobile"><div class="stick" id="stick"><div class="nub" id="nub"></div></div><div class="looklabel">DRAG RIGHT SIDE TO LOOK</div></div>
+<div id="start"><div class="card"><div class="eyebrow">A DARK FANTASY STORY PROTOTYPE</div><h1>MERROW:<br>THE LOST PAGES</h1><div class="sub">The forest remembers what the world tried to bury.</div><div class="story">A forbidden book was scattered when the corruption came. One of its missing pages is calling from an abandoned shrine. Find it, then return to the ancient gate.</div><button class="primary" id="begin">ENTER THE FOREST</button><div class="small">Prototype build · Move: WASD / arrows or touch pad · Look: mouse or drag · Interact: E or button. Headphones recommended.</div></div></div>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-const host=document.querySelector('#scene');
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x101a16); scene.fog=new THREE.FogExp2(0x14221b,.00019);
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,1,50000);
-camera.position.set(11200,5700,14600);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0x9ab7ad,0x182018,2.0));
-const moon=new THREE.DirectionalLight(0xb4d2ca,2.3);moon.position.set(-7000,12000,3000);scene.add(moon);
-const greenLight=new THREE.PointLight(0x39d86b,1800,9500,2);greenLight.position.set(4000,800,1500);scene.add(greenLight);
-const groundMat=new THREE.MeshStandardMaterial({color:0x26382b,roughness:1});
-const ground=new THREE.Mesh(new THREE.PlaneGeometry(40000,40000),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-30;scene.add(ground);
+const $=id=>document.getElementById(id),host=$('game');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x101b15);scene.fog=new THREE.FogExp2(0x132019,.013);
+const camera=new THREE.PerspectiveCamera(74,innerWidth/innerHeight,.1,500);camera.rotation.order='YXZ';
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;host.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0x9ab9a1,0x11170f,1.7));
+const moon=new THREE.DirectionalLight(0xb6d7bd,2.0);moon.position.set(-30,60,15);scene.add(moon);
+const glow=new THREE.PointLight(0x42e477,7,22,2);glow.position.set(0,3,-22);scene.add(glow);
 const mats={
-trunk:new THREE.MeshStandardMaterial({color:0x302e24,roughness:1}),
-bark:new THREE.MeshStandardMaterial({color:0x454337,roughness:1}),
-leaf1:new THREE.MeshStandardMaterial({color:0x203b2b,roughness:1}),
+ground:new THREE.MeshStandardMaterial({color:0x26352a,roughness:1}),
+trunk:new THREE.MeshStandardMaterial({color:0x302e25,roughness:1}),
+bark:new THREE.MeshStandardMaterial({color:0x484538,roughness:1}),
+leaf:new THREE.MeshStandardMaterial({color:0x203b2b,roughness:1}),
 leaf2:new THREE.MeshStandardMaterial({color:0x2c4933,roughness:1}),
-stone:new THREE.MeshStandardMaterial({color:0x555a50,roughness:.96}),
-darkstone:new THREE.MeshStandardMaterial({color:0x303a32,roughness:1}),
-path:new THREE.MeshStandardMaterial({color:0x686c5c,roughness:.95}),
-crystal:new THREE.MeshStandardMaterial({color:0x1d9d55,emissive:0x08752f,emissiveIntensity:1.4,roughness:.35,metalness:.1})
+stone:new THREE.MeshStandardMaterial({color:0x555b50,roughness:.96}),
+path:new THREE.MeshStandardMaterial({color:0x6c705f,roughness:1}),
+crystal:new THREE.MeshStandardMaterial({color:0x32c76a,emissive:0x0c6d2c,emissiveIntensity:2,roughness:.3}),
+page:new THREE.MeshStandardMaterial({color:0xffe7a0,emissive:0x9b6d1b,emissiveIntensity:1.8,side:THREE.DoubleSide}),
+gate:new THREE.MeshStandardMaterial({color:0x414b40,roughness:1})
 };
-const trunkGeo=new THREE.CylinderGeometry(65,110,1,7), crownGeo=new THREE.IcosahedronGeometry(1,1), rockGeo=new THREE.DodecahedronGeometry(1,0), crystalGeo=new THREE.OctahedronGeometry(1,0);
-function seeded(seed){let x=seed>>>0;return()=>{x=(1664525*x+1013904223)>>>0;return x/4294967296}}
-const rand=seeded(7319);
-const forest=new THREE.Group();scene.add(forest);
-function tree(x,z,scale){
- const h=(1000+rand()*1700)*scale,w=(.75+rand()*.5)*scale;
- const trunk=new THREE.Mesh(trunkGeo,mats.trunk);trunk.scale.set(w,h,w);trunk.position.set(x,h/2-20,z);trunk.rotation.z=(rand()-.5)*.08;forest.add(trunk);
- for(let i=0;i<3;i++){const s=(520+rand()*350)*scale;const crown=new THREE.Mesh(crownGeo,i===1?mats.leaf2:mats.leaf1);crown.scale.set(s*(.8+rand()*.5),s*(.7+rand()*.7),s*(.8+rand()*.5));crown.position.set(x+(rand()-.5)*250*scale,h*(.72+i*.14),z+(rand()-.5)*250*scale);forest.add(crown)}
-}
-for(let i=0;i<145;i++){let a=rand()*Math.PI*2,r=3500+rand()*12000;if(r<4500&&rand()<.72)r+=2200;tree(Math.cos(a)*r,Math.sin(a)*r,.65+rand()*.8)}
-for(let i=0;i<110;i++){let a=rand()*Math.PI*2,r=1800+rand()*11000,s=120+rand()*280;const rock=new THREE.Mesh(rockGeo,i%3===0?mats.darkstone:mats.stone);rock.scale.set(s*(.7+rand()),s*(.5+rand()),s*(.6+rand()));rock.position.set(Math.cos(a)*r,s*.45-10,Math.sin(a)*r);rock.rotation.set(rand(),rand()*3,rand());forest.add(rock)}
-// Broken old road winding from the open clearing into the woods.
-for(let i=0;i<58;i++){let t=i/57,r=1800+t*9800,z=Math.sin(t*4.2)*900+(rand()-.5)*420;let stone=new THREE.Mesh(new THREE.BoxGeometry(260+rand()*130,50,150+rand()*100),mats.path);stone.position.set(r,0,z);stone.rotation.y=(rand()-.5)*.28;stone.rotation.x=(rand()-.5)*.08;forest.add(stone)}
-// Ruined columns and lintels: fragments rather than a complete, pristine building.
-for(let i=0;i<18;i++){let a=rand()*Math.PI*2,r=3400+rand()*7400,x=Math.cos(a)*r,z=Math.sin(a)*r;let h=350+rand()*900;let col=new THREE.Mesh(new THREE.BoxGeometry(180+rand()*100,h,180+rand()*100),i%2?mats.stone:mats.darkstone);col.position.set(x,h/2,z);col.rotation.y=rand()*.5;col.rotation.z=(rand()-.5)*.12;forest.add(col);if(i%3===0){let beam=new THREE.Mesh(new THREE.BoxGeometry(900,150,180),mats.stone);beam.position.set(x+350,h+80,z);beam.rotation.z=(rand()-.5)*.3;forest.add(beam)}}
-// A small sanctuary silhouette in the clearing.
-const sanctuary=new THREE.Group();scene.add(sanctuary);
-for(let i=0;i<8;i++){let a=i*Math.PI/4,x=Math.cos(a)*1150,z=Math.sin(a)*1150;let p=new THREE.Mesh(new THREE.CylinderGeometry(110,150,680,7),mats.darkstone);p.position.set(x,310,z);sanctuary.add(p)}
-const altar=new THREE.Mesh(new THREE.BoxGeometry(700,170,480),mats.stone);altar.position.set(0,95,0);sanctuary.add(altar);
-const altarStone=new THREE.Mesh(new THREE.OctahedronGeometry(200,0),mats.crystal);altarStone.position.set(0,430,0);sanctuary.add(altarStone);
-// Corruption crystal clusters around the perimeter.
-const crystals=new THREE.Group();scene.add(crystals);
-for(let i=0;i<35;i++){let a=rand()*Math.PI*2,r=7000+rand()*6000,x=Math.cos(a)*r,z=Math.sin(a)*r,s=150+rand()*430;for(let j=0;j<1+Math.floor(rand()*3);j++){let c=new THREE.Mesh(crystalGeo,mats.crystal);c.scale.set(s*.7,s*(1.3+rand()),s*.7);c.position.set(x+(rand()-.5)*500,s*.7,z+(rand()-.5)*500);c.rotation.set(rand()*.3,rand()*3,rand()*.3);crystals.add(c)}}
-const particles=new THREE.Group();scene.add(particles);
-for(let i=0;i<100;i++){let g=new THREE.Mesh(new THREE.SphereGeometry(18+rand()*22,5,5),new THREE.MeshBasicMaterial({color:0x70d78a,transparent:true,opacity:.18+rand()*.28}));g.position.set((rand()-.5)*18000,200+rand()*2200,(rand()-.5)*18000);particles.add(g)}
-let yaw=.58,pitch=.26,distance=19000,drag=false,lastX=0,lastY=0,intensity=.65;
-const target=new THREE.Vector3(0,300,0);
-function cameraUpdate(){pitch=Math.max(-.05,Math.min(.85,pitch));camera.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*distance,target.y+Math.sin(pitch)*distance,target.z+Math.cos(yaw)*Math.cos(pitch)*distance);camera.lookAt(target)}
-cameraUpdate();
-renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});
-renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-lastX)*.004;pitch+=(e.clientY-lastY)*.003;lastX=e.clientX;lastY=e.clientY;cameraUpdate()});
-renderer.domElement.addEventListener('pointerup',()=>drag=false);renderer.domElement.addEventListener('pointercancel',()=>drag=false);
-renderer.domElement.addEventListener('wheel',e=>{distance=Math.max(5000,Math.min(30000,distance+e.deltaY*5));cameraUpdate()},{passive:true});
-document.querySelector('#corrupt').addEventListener('click',()=>{intensity=intensity>=.95?.25:intensity+.35;applyCorruption()});
-function applyCorruption(){mats.crystal.emissiveIntensity=.4+intensity*2.2;greenLight.intensity=500+intensity*2600;crystals.scale.setScalar(.7+intensity*.55);document.querySelector('#mode').textContent='Corruption intensity: '+Math.round(intensity*100)+'%'}
-document.querySelector('#reset').addEventListener('click',()=>{yaw=.58;pitch=.26;distance=19000;cameraUpdate()});
-function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
-addEventListener('resize',resize);
-const clock=new THREE.Clock();
-function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();altarStone.rotation.y=t*.25;altarStone.position.y=430+Math.sin(t*.8)*30;particles.rotation.y=t*.008;renderer.render(scene,camera)}
-animate();
+function matMesh(geo,mat,x,y,z,sx=1,sy=1,sz=1){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);scene.add(m);return m}
+const ground=matMesh(new THREE.PlaneGeometry(260,260),mats.ground,0,-.22,0,1,1,1);ground.rotation.x=-Math.PI/2;
+const rand=(()=>{let s=7319;return()=>{s=(1664525*s+1013904223)>>>0;return s/4294967296}})();
+const obstacles=[];
+function tree(x,z,scale){const h=(5+rand()*4)*scale,w=.45*scale;matMesh(new THREE.CylinderGeometry(w*.7,w,h,7),mats.trunk,x,h/2-.1,z);for(let i=0;i<3;i++){const r=(1.8+rand()*.8)*scale;const c=matMesh(new THREE.IcosahedronGeometry(r,1),i===1?mats.leaf2:mats.leaf,x+(rand()-.5)*.4,h*.65+i*.9,z+(rand()-.5)*.4,1,.8+rand()*.6,1);c.rotation.y=rand()*3}obstacles.push({x,z,r:scale*.9})}
+for(let i=0;i<92;i++){const a=rand()*Math.PI*2,r=13+rand()*96;if(r<29&&rand()<.85)continue;tree(Math.cos(a)*r,Math.sin(a)*r,.7+rand()*.9)}
+for(let i=0;i<60;i++){const a=rand()*Math.PI*2,r=8+rand()*90,s=.25+rand()*.65;const rock=matMesh(new THREE.DodecahedronGeometry(s,0),mats.stone,Math.cos(a)*r,s*.45,Math.sin(a)*r,1.2,.7,1);rock.rotation.set(rand(),rand()*3,rand())}
+for(let i=0;i<26;i++){const t=i/25,z=24-t*46,x=Math.sin(t*4)*3+(rand()-.5)*1.8;const p=matMesh(new THREE.BoxGeometry(1.7,.22,1.05),mats.path,x,-.04,z,1,1,1);p.rotation.y=(rand()-.5)*.3}
+for(let i=0;i<12;i++){const a=i*Math.PI/6,r=11.2,x=Math.cos(a)*r,z=-22+Math.sin(a)*r;const h=1.8+rand()*1.4;const pillar=matMesh(new THREE.BoxGeometry(.65,h,.65),mats.stone,x,h/2-.1,z);pillar.rotation.y=rand()*.2;if(i%3===0){const beam=matMesh(new THREE.BoxGeometry(2.6,.35,.65),mats.stone,x+.7,h+.1,z);beam.rotation.z=(rand()-.5)*.25}}
+matMesh(new THREE.BoxGeometry(3.3,.55,2.3),mats.stone,0,.05,-22);
+const pageGroup=new THREE.Group();scene.add(pageGroup);
+const sheet=new THREE.Mesh(new THREE.PlaneGeometry(.9,1.2),mats.page);sheet.position.y=1.45;pageGroup.add(sheet);
+const pageEdge=new THREE.Mesh(new THREE.BoxGeometry(.98,.035,1.25),mats.gate);pageEdge.position.y=1.44;pageGroup.add(pageEdge);
+const pageRing=new THREE.Mesh(new THREE.TorusGeometry(.9,.035,8,32),mats.crystal);pageRing.position.y=1.5;pageRing.rotation.x=Math.PI/2;pageGroup.add(pageRing);pageGroup.position.set(0,.25,-22);
+const crystals=[];for(let i=0;i<13;i++){const a=rand()*Math.PI*2,r=12+rand()*5,s=.3+rand()*.55;const c=matMesh(new THREE.OctahedronGeometry(s,0),mats.crystal,Math.cos(a)*r,s,Math.sin(a)*r);c.rotation.set(rand(),rand(),rand());crystals.push(c)}
+// Ancient gate: a broken stone arch at the player's starting side of the path.
+for(const x of [-2.1,2.1]){const pillar=matMesh(new THREE.BoxGeometry(.75,4,.8),mats.gate,x,1.8,27);pillar.rotation.z=x<0?-.04:.04}
+const lintel=matMesh(new THREE.BoxGeometry(5,.8,1),mats.gate,0,4,27);lintel.rotation.z=.025;
+const gateRune=matMesh(new THREE.TorusGeometry(.75,.08,8,32),mats.crystal,0,2.1,26.35);gateRune.rotation.y=Math.PI/2;gateRune.material=mats.crystal;
+const dustGeo=new THREE.BufferGeometry(),dustPos=[];for(let i=0;i<180;i++)dustPos.push((rand()-.5)*130,rand()*12,(rand()-.5)*130);dustGeo.setAttribute('position',new THREE.Float32BufferAttribute(dustPos,3));const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0x9bd8a0,size:.075,transparent:true,opacity:.5}));scene.add(dust);
+const player={x:0,z:34,yaw:Math.PI,pitch:0};camera.position.set(player.x,1.68,player.z);
+let started=false,gotPage=false,won=false,ambience=false,audioCtx=null,osc=null,master=null;
+function showToast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function hud(){if(!gotPage){$('objective').textContent='OBJECTIVE 01 — FIND THE LOST PAGE';$('description').textContent='Follow the broken stones to the glowing shrine.';$('pagecount').textContent='PAGES 0 / 7'}else if(!won){$('objective').textContent='OBJECTIVE 02 — RETURN TO THE GATE';$('description').textContent='The page is yours. Return to the ancient gate.';$('pagecount').textContent='PAGES 1 / 7'}else{$('objective').textContent='CHAPTER COMPLETE';$('description').textContent='The first page has been recovered. The book is still incomplete.';$('pagecount').textContent='PAGES 1 / 7';$('hint').textContent='Chapter complete · Refresh to play again'} }
+function dist(x,z,ox,oz){return Math.hypot(x-ox,z-oz)}
+function nearestTarget(){const dPage=dist(player.x,player.z,0,-22),dGate=dist(player.x,player.z,0,27);if(!gotPage&&dPage<4.4)return'page';if(gotPage&&!won&&dGate<5)return'gate';return''}
+function interact(){if(!started)return;const target=nearestTarget();if(target==='page'){gotPage=true;pageGroup.visible=false;glow.intensity=2.2;hud();showToast('Lost Page I recovered — ink stirs on the paper.');}else if(target==='gate'){won=true;hud();showToast('CHAPTER COMPLETE — One page found. Six remain.');$('interact').style.display='none';$('hint').textContent='Chapter complete · Refresh to play again';}else showToast('Nothing to interact with nearby. Follow the broken stone path.')}
+$('interact').addEventListener('click',interact);
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key.toLowerCase()]=true;if(e.key.toLowerCase()==='e')interact()});
+window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+const keys={};let pointerLocked=false;
+$('begin').addEventListener('click',()=>{started=true;$('start').style.display='none';if(matchMedia('(pointer:fine)').matches){renderer.domElement.requestPointerLock?.()}showToast('Find the glowing shrine. The forest path leads south.');});
+renderer.domElement.addEventListener('click',()=>{if(started&&matchMedia('(pointer:fine)').matches&&!pointerLocked)renderer.domElement.requestPointerLock?.()});
+document.addEventListener('pointerlockchange',()=>{pointerLocked=document.pointerLockElement===renderer.domElement});
+document.addEventListener('mousemove',e=>{if(pointerLocked&&started){player.yaw-=e.movementX*.0022;player.pitch=Math.max(-1.2,Math.min(1.2,player.pitch-e.movementY*.0018))}});
+let lookTouch=null;
+renderer.domElement.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&e.clientX>innerWidth*.42){lookTouch={x:e.clientX,y:e.clientY,id:e.pointerId};renderer.domElement.setPointerCapture(e.pointerId)}});
+renderer.domElement.addEventListener('pointermove',e=>{if(lookTouch&&lookTouch.id===e.pointerId){player.yaw-=(e.clientX-lookTouch.x)*.006;player.pitch=Math.max(-1.1,Math.min(1.1,player.pitch-(e.clientY-lookTouch.y)*.004));lookTouch.x=e.clientX;lookTouch.y=e.clientY}});
+renderer.domElement.addEventListener('pointerup',e=>{if(lookTouch&&lookTouch.id===e.pointerId)lookTouch=null});renderer.domElement.addEventListener('pointercancel',()=>lookTouch=null);
+let joy={x:0,y:0},stickActive=false,stickId=null;const stick=$('stick'),nub=$('nub');
+function setJoy(e){const r=stick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const max=36,len=Math.hypot(dx,dy);if(len>max){dx=dx/len*max;dy=dy/len*max}joy.x=dx/max;joy.y=dy/max;nub.style.transform='translate('+dx+'px,'+dy+'px)'}
+stick.addEventListener('pointerdown',e=>{stickActive=true;stickId=e.pointerId;stick.setPointerCapture(e.pointerId);setJoy(e)});
+stick.addEventListener('pointermove',e=>{if(stickActive&&e.pointerId===stickId)setJoy(e)});
+function resetJoy(){stickActive=false;joy.x=0;joy.y=0;nub.style.transform='translate(0,0)'}stick.addEventListener('pointerup',resetJoy);stick.addEventListener('pointercancel',resetJoy);
+function toggleSound(){try{if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();osc=audioCtx.createOscillator();const osc2=audioCtx.createOscillator();master=audioCtx.createGain();const filter=audioCtx.createBiquadFilter();osc.type='sine';osc.frequency.value=54;osc2.type='sine';osc2.frequency.value=55.5;filter.type='lowpass';filter.frequency.value=150;const g2=audioCtx.createGain();g2.gain.value=.18;osc.connect(filter);osc2.connect(g2);g2.connect(filter);filter.connect(master);master.gain.value=0;master.connect(audioCtx.destination);osc.start();osc2.start();toggleSound.osc2=osc2;}ambience=!ambience;master.gain.setTargetAtTime(ambience?.035:0,audioCtx.currentTime,.4);$('sound').textContent='Sound: '+(ambience?'on':'off');if(ambience)audioCtx.resume()}catch(e){showToast('Ambient audio is not available in this browser.')}}$('sound').addEventListener('click',toggleSound);
+function update(dt,t){if(!started||won)return;let f=(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0)-joy.y;let side=(keys.d||keys.arrowright?1:0)-(keys.a||keys.arrowleft?1:0)+joy.x;const mag=Math.hypot(f,side);if(mag>1){f/=mag;side/=mag}const speed=7.0;const dx=(-Math.sin(player.yaw)*f+Math.cos(player.yaw)*side)*speed*dt;const dz=(-Math.cos(player.yaw)*f-Math.sin(player.yaw)*side)*speed*dt;let nx=Math.max(-122,Math.min(122,player.x+dx)),nz=Math.max(-122,Math.min(122,player.z+dz));for(const o of obstacles){if(dist(nx,nz,o.x,o.z)<o.r+.45){nx=player.x;nz=player.z;break}}player.x=nx;player.z=nz;camera.position.set(player.x,1.68,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');const target=nearestTarget();$('interact').style.display=target?'block':'none';if(target==='page')$('interact').textContent='Take page';else if(target==='gate')$('interact').textContent='Seal chapter';dust.rotation.y=t*.006;pageGroup.position.y=.25+Math.sin(t*1.7)*.16;pageGroup.rotation.y=Math.sin(t*.4)*.12;sheet.rotation.z=Math.sin(t*1.3)*.04;pageRing.rotation.z=t*.4;crystals.forEach((c,i)=>{c.rotation.y+=dt*.18;c.position.y=.4+Math.sin(t+i)*.12});glow.intensity=(gotPage?1.2:6.5)+Math.sin(t*2)*.8}
+function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}window.addEventListener('resize',resize);
+let prev=performance.now();function loop(now){requestAnimationFrame(loop);const dt=Math.min(.04,(now-prev)/1000);prev=now;update(dt,now/1000);renderer.render(scene,camera)}requestAnimationFrame(loop);
+hud();
 </script>
-</body>
-</html>
+</body></html>
