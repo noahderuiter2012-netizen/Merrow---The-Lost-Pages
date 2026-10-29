@@ -11,4 +11,5 @@ class MERROW_API AMerrowGameMode : public AGameModeBase
 
 public:
     AMerrowGameMode();
+    virtual void StartPlay() override;
 };
