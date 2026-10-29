@@ -35,6 +35,10 @@ void AMerrowHUD::DrawHUD()
     Y += 24.0f;
     DrawText(FString::Printf(TEXT("PAGES RECOVERED: %d / 7"), Pages),
         FLinearColor(0.7f, 0.95f, 0.72f), X, Y, Font, 1.0f);
+    Y += 22.0f;
+    if (Player)
+        DrawText(FString::Printf(TEXT("STAMINA: %d%%"), FMath::RoundToInt(Player->Stamina)),
+            FLinearColor(0.65f, 0.9f, 0.68f), X, Y, Font, 0.95f);
 
     if (Player && Player->bCanInteract)
         DrawText(Player->CurrentInteractionPrompt.ToString(), FLinearColor(0.75f, 1.0f, 0.78f),

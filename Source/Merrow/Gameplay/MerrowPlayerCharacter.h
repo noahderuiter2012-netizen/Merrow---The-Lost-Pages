@@ -28,6 +28,18 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Merrow|Progress")
     bool bChapterComplete = false;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Merrow|Movement")
+    float Stamina = 100.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Merrow|Movement")
+    float MaxStamina = 100.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Merrow|Movement")
+    float SprintDrainPerSecond = 28.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Merrow|Movement")
+    float StaminaRecoveryPerSecond = 20.0f;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Merrow|Interaction")
     float InteractionDistance = 500.0f;
 
@@ -49,9 +61,12 @@ protected:
     void MoveRight(float Value);
     void Turn(float Value);
     void LookUp(float Value);
+    void StartSprint();
+    void StopSprint();
     void TryInteract();
 
 private:
     TWeakObjectPtr<AMerrowLostPagePickup> FocusedPage;
     TWeakObjectPtr<AMerrowAncientGate> FocusedGate;
+    bool bWantsSprint = false;
 };

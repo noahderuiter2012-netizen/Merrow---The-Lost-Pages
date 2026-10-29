@@ -26,6 +26,7 @@ AMerrowPlayerCharacter::AMerrowPlayerCharacter()
 void AMerrowPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+    Stamina = MaxStamina;
     if (APlayerController* PC = Cast<APlayerController>(GetController()))
     {
         PC->SetInputMode(FInputModeGameOnly());
@@ -36,6 +37,18 @@ void AMerrowPlayerCharacter::BeginPlay()
 void AMerrowPlayerCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+    if (bWantsSprint && Stamina > 0.0f && !bChapterComplete)
+    {
+        Stamina = FMath::Max(0.0f, Stamina - SprintDrainPerSecond * DeltaSeconds);
+        if (Stamina <= 0.0f) bWantsSprint = false;
+    }
+    else
+    {
+        Stamina = FMath::Min(MaxStamina, Stamina + StaminaRecoveryPerSecond * DeltaSeconds);
+    }
+    GetCharacterMovement()->MaxWalkSpeed = (bWantsSprint && Stamina > 0.0f) ? 650.0f : 420.0f;
+
     FocusedPage.Reset();
     FocusedGate.Reset();
     bCanInteract = false;
@@ -85,6 +98,8 @@ void AMerrowPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
     PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AMerrowPlayerCharacter::Turn);
     PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AMerrowPlayerCharacter::LookUp);
     PlayerInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &AMerrowPlayerCharacter::TryInteract);
+    PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &AMerrowPlayerCharacter::StartSprint);
+    PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &AMerrowPlayerCharacter::StopSprint);
 }
 
 void AMerrowPlayerCharacter::MoveForward(float Value)
@@ -101,6 +116,8 @@ void AMerrowPlayerCharacter::MoveRight(float Value)
 
 void AMerrowPlayerCharacter::Turn(float Value) { AddControllerYawInput(Value); }
 void AMerrowPlayerCharacter::LookUp(float Value) { AddControllerPitchInput(Value); }
+void AMerrowPlayerCharacter::StartSprint() { bWantsSprint = true; }
+void AMerrowPlayerCharacter::StopSprint() { bWantsSprint = false; }
 
 void AMerrowPlayerCharacter::TryInteract()
 {
@@ -126,16 +143,15 @@ void AMerrowPlayerCharacter::RecoverLostPage()
 {
     PagesRecovered = FMath::Clamp(PagesRecovered + 1, 0, 7);
     if (GEngine)
-    {
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor(120, 235, 150),
             FString::Printf(TEXT("Lost page recovered: %d / 7"), PagesRecovered));
-    }
 }
 
 void AMerrowPlayerCharacter::CompleteChapter()
 {
     if (bChapterComplete) return;
     bChapterComplete = true;
+    bWantsSprint = false;
     if (APlayerController* PC = Cast<APlayerController>(GetController()))
     {
         PC->SetIgnoreMoveInput(true);
