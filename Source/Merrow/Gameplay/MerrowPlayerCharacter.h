@@ -6,6 +6,7 @@
 
 class UCameraComponent;
 class AMerrowLostPagePickup;
+class AMerrowAncientGate;
 
 UCLASS()
 class MERROW_API AMerrowPlayerCharacter : public ACharacter
@@ -24,8 +25,11 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Merrow|Progress")
     int32 PagesRecovered = 0;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Merrow|Progress")
+    bool bChapterComplete = false;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Merrow|Interaction")
-    float InteractionDistance = 350.0f;
+    float InteractionDistance = 500.0f;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Merrow|Interaction")
     bool bCanInteract = false;
@@ -35,6 +39,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="Merrow|Progress")
     void RecoverLostPage();
+
+    UFUNCTION(BlueprintCallable, Category="Merrow|Progress")
+    void CompleteChapter();
 
 protected:
     virtual void BeginPlay() override;
@@ -46,4 +53,5 @@ protected:
 
 private:
     TWeakObjectPtr<AMerrowLostPagePickup> FocusedPage;
+    TWeakObjectPtr<AMerrowAncientGate> FocusedGate;
 };

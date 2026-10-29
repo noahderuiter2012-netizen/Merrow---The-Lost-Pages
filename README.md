@@ -4,31 +4,25 @@ A dark-fantasy story game. Long-term target: Unreal Engine 5.6. This repository 
 
 ## Browser prototype
 
-The browser prototype is in \`docs/index.html\`. To publish with GitHub Pages, open **Settings → Pages**, select **Deploy from a branch**, choose branch \`main\` and folder \`/docs\`, then save. After Pages deploys, open:
-
-https://noahderuiter2012-netizen.github.io/Merrow---The-Lost-Pages/
-
-It loads Three.js from a public CDN and requires internet. It is a separate prototype, not the compiled Unreal game.
+The browser prototype is in \`docs/index.html\`. To publish with GitHub Pages, open **Settings → Pages**, select **Deploy from a branch**, choose branch \`main\` and folder \`/docs\`, then save. It is a separate prototype, not the compiled Unreal game.
 
 ## Unreal Engine source
 
-Current C++ foundation:
+Current systems include the forest blockout and atmosphere director, editor-placeable discovery landmarks, first-person movement/camera, floating lost-page pickups, a simple HUD, a GameMode, and a basic ancient gate.
 
-- \`AMerrowAtmosphereDirector\`: adjustable fog and emerald-corruption blending.
-- \`AMerrowForestSceneDirector\`: deterministic forest blockout using built-in placeholder meshes.
-- \`AMerrowDiscoveryLandmark\`: editor-placeable shrine, lore relic, corruption scar, ancient gate, and boss-arena markers.
-- \`AMerrowPlayerCharacter\`: first-person camera, WASD movement, mouse look, and forward interaction trace.
-- \`AMerrowLostPagePickup\`: floating page actor collectable with E.
-- \`AMerrowHUD\`: objective, page count, and interaction prompt.
-- \`AMerrowGameMode\`: selects the first-person pawn/HUD and temporarily spawns the forest plus first page for a quick test.
-- \`Config/DefaultInput.ini\`: keyboard and basic gamepad mappings.
+### Current intended first chapter
 
-### First Unreal test
+1. Start in the Ancient Forest clearing.
+2. Follow the broken path and collect all seven missing pages.
+3. Return to the ancient gate behind the starting clearing.
+4. Aim at the gate and press E to open it; the HUD shows a chapter-complete state.
 
-1. Use a compatible Windows development computer with Unreal Engine 5.6 and its C++ build tools.
-2. Generate project files/open \`Merrow.uproject\` and compile the editor target.
-3. Launch an empty level using the configured \`AMerrowGameMode\`. It temporarily spawns the forest blockout and first page automatically.
-4. Press Play. Move with WASD, look with the mouse, aim at the glowing/page placeholder, and press E to collect it.
-5. Once this bootstrapped test works, replace temporary auto-spawn with a saved authored map and proper materials/assets.
+### Build and test
 
-**Not verified:** this C++ source has not been compiled or run in Unreal Editor. The bootstrapped scene is a greybox, not final art. The page interaction is a first mechanic; the complete seven-page quest, gate completion, save system, enemies, and Corrupted King fight are not implemented in Unreal yet.
+1. Use a compatible Windows development computer with Unreal Engine 5.6 and the C++ build tools installed.
+2. Open \`Merrow.uproject\` and compile the editor target.
+3. Launch an empty test level with the configured default GameMode; it should spawn the forest, seven pages, and gate.
+4. Press Play. Use WASD to move, mouse to look, and E to interact.
+5. Fix any compile/runtime issues before treating this as a playable build.
+
+**Important:** The Unreal C++ source has not been compiled or tested in Unreal Editor. The forest and gate use primitive placeholder meshes, and the seven-page chapter is a first gameplay slice rather than the finished story. No packaged Windows/Xbox build exists yet. Xbox packaging and release require the appropriate platform tooling and access.

@@ -14,6 +14,7 @@ AMerrowLostPagePickup::AMerrowLostPagePickup()
     PageMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     PageMesh->SetCollisionResponseToAllChannels(ECR_Block);
     PageMesh->SetRelativeScale3D(FVector(0.08f, 0.12f, 0.015f));
+    PageMesh->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> PlaneMesh(TEXT("/Engine/BasicShapes/Plane.Plane"));
     if (PlaneMesh.Succeeded()) PageMesh->SetStaticMesh(PlaneMesh.Object);
