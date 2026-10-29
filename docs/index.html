@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101713">
+<title>MERROW — Ancient Forest Preview</title>
+<style>
+:root{color-scheme:dark;--ink:#e8eee7;--muted:#a9b6aa;--panel:rgba(11,18,15,.78);--line:rgba(205,231,207,.16)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101713;color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+#scene{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
+.overlay{position:fixed;z-index:2;pointer-events:none;inset:0;padding:clamp(16px,3vw,32px);display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,rgba(3,8,6,.62),transparent 32%,transparent 62%,rgba(3,8,6,.58))}
+header{max-width:620px} .eyebrow{letter-spacing:.22em;text-transform:uppercase;font-size:10px;color:#a9d6ae;font-weight:700}h1{font-size:clamp(25px,5vw,48px);line-height:1.02;letter-spacing:.08em;margin:8px 0 10px;font-weight:650}p{margin:0;color:#c5d0c5;max-width:460px;font-size:13px}
+.bottom{display:flex;justify-content:space-between;align-items:end;gap:14px;flex-wrap:wrap}.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:var(--panel);color:#d9e5da;font-size:11px;backdrop-filter:blur(12px)}.dot{width:7px;height:7px;border-radius:50%;background:#8ddf9c;box-shadow:0 0 12px #5bb96b}
+.controls{pointer-events:auto;display:flex;gap:8px;flex-wrap:wrap}.controls button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 13px;backdrop-filter:blur(12px);cursor:pointer}.controls button:active{transform:translateY(1px)}.hint{font-size:11px;color:#c2cec3;text-align:right;max-width:250px}
+#fallback{position:fixed;inset:0;display:none;place-items:center;padding:24px;text-align:center;color:var(--muted)}
+@media(max-width:560px){.overlay{padding:17px}.bottom{align-items:start;flex-direction:column}.hint{text-align:left}.controls button{padding:9px 11px}}
+</style>
+</head>
+<body>
+<div id="scene"></div>
+<div class="overlay">
+<header><div class="eyebrow">MERROW · THE LOST PAGES</div><h1>THE ANCIENT FOREST</h1><p>A first atmosphere and layout study: old stone, drowned ruins, and emerald corruption pressing in from the edges.</p></header>
+<div class="bottom"><div><div class="chip"><span class="dot"></span> ENVIRONMENT BLOCKOUT · PREVIEW ONLY</div><div style="height:8px"></div><div class="chip" id="mode">Corruption intensity: 65%</div></div><div><div class="controls"><button id="corrupt">Shift corruption</button><button id="reset">Reset view</button></div><div style="height:8px"></div><div class="hint">Drag to look around · pinch or scroll to zoom</div></div></div>
+</div>
+<div id="fallback">The 3D preview needs an internet connection to load its rendering library. Check your connection and reload this page.</div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const host=document.querySelector('#scene');
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x101a16); scene.fog=new THREE.FogExp2(0x14221b,.00019);
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,1,50000);
+camera.position.set(11200,5700,14600);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0x9ab7ad,0x182018,2.0));
+const moon=new THREE.DirectionalLight(0xb4d2ca,2.3);moon.position.set(-7000,12000,3000);scene.add(moon);
+const greenLight=new THREE.PointLight(0x39d86b,1800,9500,2);greenLight.position.set(4000,800,1500);scene.add(greenLight);
+const groundMat=new THREE.MeshStandardMaterial({color:0x26382b,roughness:1});
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(40000,40000),groundMat);ground.rotation.x=-Math.PI/2;ground.position.y=-30;scene.add(ground);
+const mats={
+trunk:new THREE.MeshStandardMaterial({color:0x302e24,roughness:1}),
+bark:new THREE.MeshStandardMaterial({color:0x454337,roughness:1}),
+leaf1:new THREE.MeshStandardMaterial({color:0x203b2b,roughness:1}),
+leaf2:new THREE.MeshStandardMaterial({color:0x2c4933,roughness:1}),
+stone:new THREE.MeshStandardMaterial({color:0x555a50,roughness:.96}),
+darkstone:new THREE.MeshStandardMaterial({color:0x303a32,roughness:1}),
+path:new THREE.MeshStandardMaterial({color:0x686c5c,roughness:.95}),
+crystal:new THREE.MeshStandardMaterial({color:0x1d9d55,emissive:0x08752f,emissiveIntensity:1.4,roughness:.35,metalness:.1})
+};
+const trunkGeo=new THREE.CylinderGeometry(65,110,1,7), crownGeo=new THREE.IcosahedronGeometry(1,1), rockGeo=new THREE.DodecahedronGeometry(1,0), crystalGeo=new THREE.OctahedronGeometry(1,0);
+function seeded(seed){let x=seed>>>0;return()=>{x=(1664525*x+1013904223)>>>0;return x/4294967296}}
+const rand=seeded(7319);
+const forest=new THREE.Group();scene.add(forest);
+function tree(x,z,scale){
+ const h=(1000+rand()*1700)*scale,w=(.75+rand()*.5)*scale;
+ const trunk=new THREE.Mesh(trunkGeo,mats.trunk);trunk.scale.set(w,h,w);trunk.position.set(x,h/2-20,z);trunk.rotation.z=(rand()-.5)*.08;forest.add(trunk);
+ for(let i=0;i<3;i++){const s=(520+rand()*350)*scale;const crown=new THREE.Mesh(crownGeo,i===1?mats.leaf2:mats.leaf1);crown.scale.set(s*(.8+rand()*.5),s*(.7+rand()*.7),s*(.8+rand()*.5));crown.position.set(x+(rand()-.5)*250*scale,h*(.72+i*.14),z+(rand()-.5)*250*scale);forest.add(crown)}
+}
+for(let i=0;i<145;i++){let a=rand()*Math.PI*2,r=3500+rand()*12000;if(r<4500&&rand()<.72)r+=2200;tree(Math.cos(a)*r,Math.sin(a)*r,.65+rand()*.8)}
+for(let i=0;i<110;i++){let a=rand()*Math.PI*2,r=1800+rand()*11000,s=120+rand()*280;const rock=new THREE.Mesh(rockGeo,i%3===0?mats.darkstone:mats.stone);rock.scale.set(s*(.7+rand()),s*(.5+rand()),s*(.6+rand()));rock.position.set(Math.cos(a)*r,s*.45-10,Math.sin(a)*r);rock.rotation.set(rand(),rand()*3,rand());forest.add(rock)}
+// Broken old road winding from the open clearing into the woods.
+for(let i=0;i<58;i++){let t=i/57,r=1800+t*9800,z=Math.sin(t*4.2)*900+(rand()-.5)*420;let stone=new THREE.Mesh(new THREE.BoxGeometry(260+rand()*130,50,150+rand()*100),mats.path);stone.position.set(r,0,z);stone.rotation.y=(rand()-.5)*.28;stone.rotation.x=(rand()-.5)*.08;forest.add(stone)}
+// Ruined columns and lintels: fragments rather than a complete, pristine building.
+for(let i=0;i<18;i++){let a=rand()*Math.PI*2,r=3400+rand()*7400,x=Math.cos(a)*r,z=Math.sin(a)*r;let h=350+rand()*900;let col=new THREE.Mesh(new THREE.BoxGeometry(180+rand()*100,h,180+rand()*100),i%2?mats.stone:mats.darkstone);col.position.set(x,h/2,z);col.rotation.y=rand()*.5;col.rotation.z=(rand()-.5)*.12;forest.add(col);if(i%3===0){let beam=new THREE.Mesh(new THREE.BoxGeometry(900,150,180),mats.stone);beam.position.set(x+350,h+80,z);beam.rotation.z=(rand()-.5)*.3;forest.add(beam)}}
+// A small sanctuary silhouette in the clearing.
+const sanctuary=new THREE.Group();scene.add(sanctuary);
+for(let i=0;i<8;i++){let a=i*Math.PI/4,x=Math.cos(a)*1150,z=Math.sin(a)*1150;let p=new THREE.Mesh(new THREE.CylinderGeometry(110,150,680,7),mats.darkstone);p.position.set(x,310,z);sanctuary.add(p)}
+const altar=new THREE.Mesh(new THREE.BoxGeometry(700,170,480),mats.stone);altar.position.set(0,95,0);sanctuary.add(altar);
+const altarStone=new THREE.Mesh(new THREE.OctahedronGeometry(200,0),mats.crystal);altarStone.position.set(0,430,0);sanctuary.add(altarStone);
+// Corruption crystal clusters around the perimeter.
+const crystals=new THREE.Group();scene.add(crystals);
+for(let i=0;i<35;i++){let a=rand()*Math.PI*2,r=7000+rand()*6000,x=Math.cos(a)*r,z=Math.sin(a)*r,s=150+rand()*430;for(let j=0;j<1+Math.floor(rand()*3);j++){let c=new THREE.Mesh(crystalGeo,mats.crystal);c.scale.set(s*.7,s*(1.3+rand()),s*.7);c.position.set(x+(rand()-.5)*500,s*.7,z+(rand()-.5)*500);c.rotation.set(rand()*.3,rand()*3,rand()*.3);crystals.add(c)}}
+const particles=new THREE.Group();scene.add(particles);
+for(let i=0;i<100;i++){let g=new THREE.Mesh(new THREE.SphereGeometry(18+rand()*22,5,5),new THREE.MeshBasicMaterial({color:0x70d78a,transparent:true,opacity:.18+rand()*.28}));g.position.set((rand()-.5)*18000,200+rand()*2200,(rand()-.5)*18000);particles.add(g)}
+let yaw=.58,pitch=.26,distance=19000,drag=false,lastX=0,lastY=0,intensity=.65;
+const target=new THREE.Vector3(0,300,0);
+function cameraUpdate(){pitch=Math.max(-.05,Math.min(.85,pitch));camera.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*distance,target.y+Math.sin(pitch)*distance,target.z+Math.cos(yaw)*Math.cos(pitch)*distance);camera.lookAt(target)}
+cameraUpdate();
+renderer.domElement.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});
+renderer.domElement.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-lastX)*.004;pitch+=(e.clientY-lastY)*.003;lastX=e.clientX;lastY=e.clientY;cameraUpdate()});
+renderer.domElement.addEventListener('pointerup',()=>drag=false);renderer.domElement.addEventListener('pointercancel',()=>drag=false);
+renderer.domElement.addEventListener('wheel',e=>{distance=Math.max(5000,Math.min(30000,distance+e.deltaY*5));cameraUpdate()},{passive:true});
+document.querySelector('#corrupt').addEventListener('click',()=>{intensity=intensity>=.95?.25:intensity+.35;applyCorruption()});
+function applyCorruption(){mats.crystal.emissiveIntensity=.4+intensity*2.2;greenLight.intensity=500+intensity*2600;crystals.scale.setScalar(.7+intensity*.55);document.querySelector('#mode').textContent='Corruption intensity: '+Math.round(intensity*100)+'%'}
+document.querySelector('#reset').addEventListener('click',()=>{yaw=.58;pitch=.26;distance=19000;cameraUpdate()});
+function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+addEventListener('resize',resize);
+const clock=new THREE.Clock();
+function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();altarStone.rotation.y=t*.25;altarStone.position.y=430+Math.sin(t*.8)*30;particles.rotation.y=t*.008;renderer.render(scene,camera)}
+animate();
+</script>
+</body>
+</html>
