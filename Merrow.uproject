@@ -1,0 +1,13 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.6",
+  "Category": "Games",
+  "Description": "MERROW: THE LOST PAGES - dark fantasy single-player adventure",
+  "Modules": [
+    {
+      "Name": "Merrow",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
