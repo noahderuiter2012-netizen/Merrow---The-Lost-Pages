@@ -1,6 +1,7 @@
 #include "MerrowForestSceneDirector.h"
 
 #include "Components/InstancedStaticMeshComponent.h"
+#include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "UObject/ConstructorHelpers.h"
@@ -173,8 +174,7 @@ void AMerrowForestSceneDirector::RebuildForest()
             Position, Scale));
     }
 
-    // A broken, slightly winding old road leads out of the clearing. Its gaps
-    // make it feel abandoned while still giving players a readable direction.
+    // A broken, slightly winding old road leads out of the clearing.
     for (int32 Index = 0; Index < PathStoneCount; ++Index)
     {
         const float Alpha = (static_cast<float>(Index) + 0.5f) / FMath::Max(1, PathStoneCount);
